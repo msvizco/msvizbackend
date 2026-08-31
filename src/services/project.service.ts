@@ -322,6 +322,8 @@ export async function addGalleryImages(
     order += 1;
   }
 
+  await prisma.project.update({ where: { id }, data: { updatedAt: new Date() } });
+
   return getProjectById(id);
 }
 
@@ -365,5 +367,6 @@ export async function deleteGalleryImage(projectId: string, imageId: string) {
 
   await prisma.projectImage.delete({ where: { id: imageId } });
   await deleteStoredFile(image.storagePath);
+  await prisma.project.update({ where: { id: projectId }, data: { updatedAt: new Date() } });
   return getProjectById(projectId);
 }
