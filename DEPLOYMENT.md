@@ -2,10 +2,13 @@
 
 ## Deploy
 
-1. Import `msvizco/msvizbackend` in [Vercel](https://vercel.com/new)
+1. Import **`msvizco/msvizbackend`** in [Vercel](https://vercel.com/new) (do not create an empty project first).
 2. Framework preset: **Other**
 3. Root directory: `.` (repository root)
-4. Vercel reads `vercel.json` automatically
+4. Production branch: **`main`**
+5. Vercel reads `vercel.json` automatically
+
+If Overview shows **No Production Deployment**, open **Deployments** and check for a failed build, or push again to `main` to trigger a deploy.
 
 ## Environment variables
 
