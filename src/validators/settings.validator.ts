@@ -1,0 +1,25 @@
+import { body } from 'express-validator';
+
+export const settingsBodyValidator = [
+  body('companyName').optional().isString().trim().isLength({ min: 2, max: 120 }),
+  body('email').optional().isEmail().normalizeEmail(),
+  body('phone').optional().isString().trim(),
+  body('whatsapp').optional({ nullable: true }).isString(),
+  body('address').optional().isString(),
+  body('facebook').optional({ nullable: true }).isString(),
+  body('instagram').optional({ nullable: true }).isString(),
+  body('linkedin').optional({ nullable: true }).isString(),
+  body('youtube').optional({ nullable: true }).isString(),
+  body('websiteDescription').optional().isString(),
+  body('heroHeading').optional().isString(),
+  body('heroSubtitle').optional().isString(),
+  body('aboutIntro').optional({ nullable: true }).isString(),
+  body('vision').optional({ nullable: true }).isString(),
+  body('mission').optional({ nullable: true }).isString(),
+  body('philosophy').optional({ nullable: true }).isString(),
+  body('differentiators').optional({ nullable: true }).isString(),
+  body('yearsExperience').optional().isInt({ min: 0 }).toInt(),
+  body('projectsCompleted').optional().isInt({ min: 0 }).toInt(),
+  body('clientsServed').optional().isInt({ min: 0 }).toInt(),
+  body('awardsWon').optional().isInt({ min: 0 }).toInt(),
+];
