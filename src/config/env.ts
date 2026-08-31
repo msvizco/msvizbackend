@@ -42,6 +42,7 @@ export const env = {
   adminPassword: process.env.ADMIN_PASSWORD ?? 'Admin@MSVIZ2026',
   adminName: process.env.ADMIN_NAME ?? 'MSVIZ Admin',
   maxFileSizeMb: Number(process.env.MAX_FILE_SIZE_MB ?? 10),
+  maxVideoSizeMb: Number(process.env.MAX_VIDEO_SIZE_MB ?? 100),
 };
 
 export function getMissingEnvVars(): string[] {

@@ -4,6 +4,7 @@ import { AppError } from '../utils/AppError';
 import { slugify } from '../utils/slugify';
 import { sanitizeOptional, sanitizeString } from '../utils/sanitize';
 import { deleteStoredFile, deleteStoredFiles, uploadBuffer } from './storage.service';
+import { getMediaType } from '../middleware/upload';
 
 interface ListQuery {
   page?: number;
@@ -47,6 +48,7 @@ function publicSelect() {
         imageUrl: true,
         altText: true,
         caption: true,
+        mediaType: true,
         displayOrder: true,
       },
     },
@@ -135,6 +137,7 @@ export async function getProjectById(id: string) {
           storagePath: true,
           altText: true,
           caption: true,
+          mediaType: true,
           displayOrder: true,
         },
       },
@@ -309,6 +312,7 @@ export async function addGalleryImages(
         projectId: id,
         imageUrl: uploaded.imageUrl,
         storagePath: uploaded.storagePath,
+        mediaType: getMediaType(file.mimetype),
         altText: sanitizeOptional(meta.altText) ?? project.title,
         caption: sanitizeOptional(meta.caption),
         displayOrder: order,

@@ -60,6 +60,7 @@ model ProjectImage {
   storagePath  String
   altText      String?
   caption      String?
+  mediaType    String   @default("image")
   displayOrder Int      @default(0)
   createdAt    DateTime @default(now())
 
