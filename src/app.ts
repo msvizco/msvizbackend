@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './config/env';
@@ -26,7 +26,7 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true }));
   app.use('/api', apiLimiter, routes);
 
-  app.get('/health', (_req, res) => {
+  app.get('/health', (_req: Request, res: Response) => {
     res.json({ success: true, service: 'msviz-api', status: 'ok', env: env.isVercel ? 'vercel' : 'node' });
   });
 
