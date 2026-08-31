@@ -19,5 +19,6 @@ adminRouter.put('/:id', idParamValidator, serviceBodyValidator, validate, servic
 adminRouter.delete('/:id', idParamValidator, validate, serviceController.remove);
 adminRouter.patch('/:id/toggle', idParamValidator, validate, serviceController.toggle);
 adminRouter.post('/:id/image', idParamValidator, validate, upload.single('image'), serviceController.uploadImage);
+adminRouter.delete('/:id/image', idParamValidator, validate, serviceController.deleteImage);
 
 export { publicRouter as serviceRoutes, adminRouter as adminServiceRoutes };

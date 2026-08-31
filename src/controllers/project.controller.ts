@@ -91,6 +91,11 @@ export const uploadCover = asyncHandler(async (req: Request, res: Response) => {
   return ok(res, project, 'Cover image uploaded');
 });
 
+export const deleteCover = asyncHandler(async (req: Request, res: Response) => {
+  const project = await projectService.deleteCover(param(req, 'id'));
+  return ok(res, project, 'Cover image deleted');
+});
+
 export const uploadGallery = asyncHandler(async (req: Request, res: Response) => {
   const files = (req.files as Express.Multer.File[]) || [];
   if (!files.length) throw new AppError(400, 'At least one image is required');

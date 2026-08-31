@@ -112,3 +112,18 @@ export async function uploadServiceImage(id: string, file: Express.Multer.File) 
     data: { imageUrl: uploaded.imageUrl, storagePath: uploaded.storagePath },
   });
 }
+
+export async function deleteServiceImage(id: string) {
+  const service = await prisma.service.findUnique({ where: { id } });
+  if (!service) throw new AppError(404, 'Service not found');
+  if (!service.imageUrl && !service.storagePath) {
+    throw new AppError(404, 'Service has no image');
+  }
+
+  await deleteStoredFile(service.storagePath);
+
+  return prisma.service.update({
+    where: { id },
+    data: { imageUrl: null, storagePath: null },
+  });
+}

@@ -272,6 +272,22 @@ export async function uploadCover(id: string, file: Express.Multer.File) {
   });
 }
 
+export async function deleteCover(id: string) {
+  const project = await prisma.project.findUnique({ where: { id } });
+  if (!project) throw new AppError(404, 'Project not found');
+  if (!project.coverImage && !project.coverImagePath) {
+    throw new AppError(404, 'Project has no cover image');
+  }
+
+  await deleteStoredFile(project.coverImagePath);
+
+  return prisma.project.update({
+    where: { id },
+    data: { coverImage: null, coverImagePath: null },
+    select: publicSelect(),
+  });
+}
+
 export async function addGalleryImages(
   id: string,
   files: Express.Multer.File[],

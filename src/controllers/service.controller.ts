@@ -50,3 +50,8 @@ export const uploadImage = asyncHandler(async (req: Request, res: Response) => {
   const service = await serviceService.uploadServiceImage(param(req, 'id'), req.file);
   return ok(res, service, 'Service image uploaded');
 });
+
+export const deleteImage = asyncHandler(async (req: Request, res: Response) => {
+  const service = await serviceService.deleteServiceImage(param(req, 'id'));
+  return ok(res, service, 'Service image deleted');
+});
