@@ -35,7 +35,7 @@ export function createApp() {
     });
   });
 
-  app.use('/api', (_req, res, next) => {
+  const envGate = (_req: Request, res: Response, next: () => void) => {
     const missing = getMissingEnvVars();
     if (missing.length) {
       return res.status(503).json({
@@ -44,9 +44,12 @@ export function createApp() {
       });
     }
     next();
-  });
+  };
 
-  app.use('/api', apiLimiter, routes);
+  // /api/* — canonical paths
+  app.use('/api', envGate, apiLimiter, routes);
+  // /* — legacy paths when frontend VITE_API_URL omits /api suffix
+  app.use(envGate, apiLimiter, routes);
 
   app.use(notFound);
   app.use(errorHandler);
