@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { env } from './config/env';
+import { env, getMissingEnvVars } from './config/env';
 import routes from './routes';
 import { apiLimiter } from './middleware/rateLimiter';
 import { errorHandler, notFound } from './middleware/errorHandler';
@@ -24,11 +24,29 @@ export function createApp() {
   );
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true }));
-  app.use('/api', apiLimiter, routes);
-
   app.get('/health', (_req: Request, res: Response) => {
-    res.json({ success: true, service: 'msviz-api', status: 'ok', env: env.isVercel ? 'vercel' : 'node' });
+    const missing = getMissingEnvVars();
+    res.status(missing.length ? 503 : 200).json({
+      success: missing.length === 0,
+      service: 'msviz-api',
+      status: missing.length ? 'misconfigured' : 'ok',
+      env: env.isVercel ? 'vercel' : 'node',
+      ...(missing.length ? { missing } : {}),
+    });
   });
+
+  app.use('/api', (_req, res, next) => {
+    const missing = getMissingEnvVars();
+    if (missing.length) {
+      return res.status(503).json({
+        success: false,
+        message: `Server misconfigured. Set: ${missing.join(', ')}`,
+      });
+    }
+    next();
+  });
+
+  app.use('/api', apiLimiter, routes);
 
   app.use(notFound);
   app.use(errorHandler);
