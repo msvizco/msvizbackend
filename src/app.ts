@@ -11,10 +11,14 @@ export function createApp() {
 
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
   app.use(
     cors({
-      origin: env.isProd ? env.frontendUrl : [env.frontendUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      origin: env.allowedOrigins,
       credentials: true,
     }),
   );
@@ -23,7 +27,7 @@ export function createApp() {
   app.use('/api', apiLimiter, routes);
 
   app.get('/health', (_req, res) => {
-    res.json({ success: true, service: 'msviz-api', status: 'ok' });
+    res.json({ success: true, service: 'msviz-api', status: 'ok', env: env.isVercel ? 'vercel' : 'node' });
   });
 
   app.use(notFound);

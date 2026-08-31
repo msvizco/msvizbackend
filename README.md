@@ -2,15 +2,13 @@
 
 Express + Prisma + PostgreSQL API with JWT admin auth and Supabase Storage uploads.
 
-See the root [README](../README.md) for full setup.
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for **Vercel** setup.
 
 ```bash
 npm install
-npx prisma generate
 npx prisma migrate dev --name init
 npm run seed
-npm run dev
+npm run dev      # http://localhost:5000
 ```
 
-API: http://localhost:5000  
-Health: http://localhost:5000/health
+Health: `GET /health` · API: `/api/*`
