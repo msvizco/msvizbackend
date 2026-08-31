@@ -1,5 +1,3 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
 function getMissingEnvVars(): string[] {
   const missing: string[] = [];
   if (!process.env.DATABASE_URL) missing.push('DATABASE_URL');
@@ -7,7 +5,10 @@ function getMissingEnvVars(): string[] {
   return missing;
 }
 
-export default function handler(_req: VercelRequest, res: VercelResponse) {
+export default function handler(
+  _req: { method?: string },
+  res: { status: (code: number) => { json: (body: object) => void } },
+) {
   const missing = getMissingEnvVars();
 
   res.status(missing.length ? 503 : 200).json({
