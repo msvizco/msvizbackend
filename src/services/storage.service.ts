@@ -24,13 +24,28 @@ export async function uploadBuffer(
   const storagePath = `${folder}/${randomUUID()}${ext}`;
   const supabase = getSupabase();
 
+  if (!file?.buffer?.length) {
+    throw new AppError(400, 'Uploaded file is empty or could not be read');
+  }
+
   const { error } = await supabase.storage.from(env.supabaseBucket).upload(storagePath, file.buffer, {
     contentType: file.mimetype,
     upsert: false,
   });
 
   if (error) {
-    throw new AppError(500, `Image upload failed: ${error.message}`);
+    console.error('[storage.upload]', {
+      bucket: env.supabaseBucket,
+      path: storagePath,
+      mime: file.mimetype,
+      size: file.buffer.length,
+      message: error.message,
+      name: error.name,
+    });
+    throw new AppError(
+      502,
+      `Image upload failed (${env.supabaseBucket}): ${error.message}`,
+    );
   }
 
   const { data } = supabase.storage.from(env.supabaseBucket).getPublicUrl(storagePath);

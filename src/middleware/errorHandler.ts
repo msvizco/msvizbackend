@@ -13,18 +13,26 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
     return;
   }
 
-  const error = err as AppError & { code?: string; errors?: unknown };
-  const statusCode = error.statusCode || 500;
-  const message =
-    statusCode === 500 && env.isProd ? 'Internal server error' : error.message || 'Internal server error';
-
-  if (!env.isProd) {
-    console.error(err);
+  if (err instanceof AppError) {
+    if (env.isProd && err.statusCode >= 500) {
+      console.error('[AppError]', err.statusCode, err.message, err.details ?? '');
+    }
+    res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+      ...(err.details ? { details: err.details } : {}),
+      ...(!env.isProd && err.stack ? { stack: err.stack } : {}),
+    });
+    return;
   }
+
+  const error = err as Error & { statusCode?: number; details?: unknown };
+  const statusCode = error.statusCode || 500;
+  console.error(err);
 
   res.status(statusCode).json({
     success: false,
-    message,
+    message: env.isProd ? 'Internal server error' : error.message || 'Internal server error',
     ...(error.details ? { details: error.details } : {}),
     ...(!env.isProd && error.stack ? { stack: error.stack } : {}),
   });

@@ -14,10 +14,9 @@ function resolveAllowedOrigins(): string[] {
   if (fromList?.length) fromList.forEach((o) => origins.add(o));
   if (primary) origins.add(primary);
 
-  if (!isProd) {
-    origins.add('http://localhost:5173');
-    origins.add('http://127.0.0.1:5173');
-  }
+  // Local Vite admin always talks to the API; keep these allowed in every env.
+  origins.add('http://localhost:5173');
+  origins.add('http://127.0.0.1:5173');
 
   if (!origins.size && primary) origins.add(primary);
   if (!origins.size) origins.add('http://localhost:5173');
