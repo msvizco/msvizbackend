@@ -12,7 +12,7 @@ export const PROJECT_STATUSES = ['concept', 'in-progress', 'completed'] as const
 
 export const MESSAGE_STATUSES = ['new', 'read', 'replied', 'archived'] as const;
 
-export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/x-png'];
 
 export const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
 
@@ -23,6 +23,15 @@ export const ALLOWED_VIDEO_EXTENSIONS = ['.mp4', '.webm', '.mov'];
 export const ALLOWED_GALLERY_MIME_TYPES = [...ALLOWED_MIME_TYPES, ...ALLOWED_VIDEO_MIME_TYPES];
 
 export const ALLOWED_GALLERY_EXTENSIONS = [...ALLOWED_EXTENSIONS, ...ALLOWED_VIDEO_EXTENSIONS];
+
+/** Normalize browser/OS quirks so PNG uploads are accepted consistently. */
+export function normalizeImageMime(mime: string | undefined): string {
+  const value = (mime || '').toLowerCase().trim();
+  if (!value || value === 'application/octet-stream') return '';
+  if (value === 'image/x-png' || value === 'image/png') return 'image/png';
+  if (value === 'image/jpg' || value === 'image/pjpeg') return 'image/jpeg';
+  return value;
+}
 
 export function isVideoMime(mime: string): boolean {
   return ALLOWED_VIDEO_MIME_TYPES.includes(mime);

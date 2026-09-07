@@ -126,6 +126,12 @@ model SiteSetting {
   projectsCompleted  Int      @default(0)
   clientsServed      Int      @default(0)
   awardsWon          Int      @default(0)
+  whoImageUrl        String?
+  whoImagePath       String?
+  missionImageUrl    String?
+  missionImagePath   String?
+  visionImageUrl     String?
+  visionImagePath    String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 }

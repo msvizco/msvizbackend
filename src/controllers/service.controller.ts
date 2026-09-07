@@ -55,3 +55,10 @@ export const deleteImage = asyncHandler(async (req: Request, res: Response) => {
   const service = await serviceService.deleteServiceImage(param(req, 'id'));
   return ok(res, service, 'Service image deleted');
 });
+
+export const reorder = asyncHandler(async (req: Request, res: Response) => {
+  const ids = req.body.orderedIds as string[];
+  if (!Array.isArray(ids)) throw new AppError(400, 'orderedIds must be an array');
+  const services = await serviceService.reorderServices(ids);
+  return ok(res, services, 'Services reordered');
+});

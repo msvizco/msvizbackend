@@ -89,14 +89,14 @@ export async function listProjects(query: ListQuery, admin = false) {
     ];
   }
 
-  const orderBy: Prisma.ProjectOrderByWithRelationInput =
+  const orderBy: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[] =
     query.sort === 'oldest'
       ? { createdAt: 'asc' }
-      : query.sort === 'order'
-        ? { displayOrder: 'asc' }
+      : query.sort === 'newest'
+        ? { createdAt: 'desc' }
         : query.sort === 'year'
           ? { year: 'desc' }
-          : { createdAt: 'desc' };
+          : [{ displayOrder: 'asc' }, { createdAt: 'desc' }];
 
   const [items, total] = await prisma.$transaction([
     prisma.project.findMany({
@@ -177,6 +177,8 @@ interface ProjectInput {
 
 export async function createProject(input: ProjectInput) {
   const slug = await uniqueSlug(input.title, input.slug);
+  const maxOrder = await prisma.project.aggregate({ _max: { displayOrder: true } });
+  const nextOrder = input.displayOrder ?? (maxOrder._max.displayOrder ?? -1) + 1;
   return prisma.project.create({
     data: {
       title: sanitizeString(input.title),
@@ -194,7 +196,7 @@ export async function createProject(input: ProjectInput) {
       latest: Boolean(input.latest),
       completed: Boolean(input.completed) || input.status === 'completed',
       published: Boolean(input.published),
-      displayOrder: input.displayOrder ?? 0,
+      displayOrder: nextOrder,
     },
     select: publicSelect(),
   });
@@ -359,6 +361,23 @@ export async function reorderGalleryImages(projectId: string, orderedIds: string
     ),
   );
   return getProjectById(projectId);
+}
+
+export async function reorderProjects(orderedIds: string[]) {
+  if (!Array.isArray(orderedIds) || !orderedIds.length) {
+    throw new AppError(400, 'orderedIds must be a non-empty array');
+  }
+
+  await prisma.$transaction(
+    orderedIds.map((id, index) =>
+      prisma.project.update({
+        where: { id },
+        data: { displayOrder: index },
+      }),
+    ),
+  );
+
+  return listProjects({ page: 1, limit: 100, sort: 'order' }, true);
 }
 
 export async function deleteGalleryImage(projectId: string, imageId: string) {

@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "whoImageUrl" TEXT;
+ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "whoImagePath" TEXT;
+ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "missionImageUrl" TEXT;
+ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "missionImagePath" TEXT;
+ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "visionImageUrl" TEXT;
+ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "visionImagePath" TEXT;

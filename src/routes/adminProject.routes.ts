@@ -10,6 +10,7 @@ const router = Router();
 router.use(requireAuth);
 
 router.get('/', projectQueryValidator, validate, projectController.listAdmin);
+router.put('/reorder', projectController.reorder);
 router.get('/:id', idParamValidator, validate, projectController.getById);
 router.post('/', projectBodyValidator, validate, projectController.create);
 router.put('/:id', idParamValidator, projectBodyValidator, validate, projectController.update);

@@ -13,6 +13,7 @@ publicRouter.get('/:slug', slugParamValidator, validate, serviceController.getBy
 const adminRouter = Router();
 adminRouter.use(requireAuth);
 adminRouter.get('/', serviceController.listAdmin);
+adminRouter.put('/reorder', serviceController.reorder);
 adminRouter.get('/:id', idParamValidator, validate, serviceController.getById);
 adminRouter.post('/', serviceBodyValidator, validate, serviceController.create);
 adminRouter.put('/:id', idParamValidator, serviceBodyValidator, validate, serviceController.update);

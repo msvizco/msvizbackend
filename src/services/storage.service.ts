@@ -28,8 +28,23 @@ export async function uploadBuffer(
     throw new AppError(400, 'Uploaded file is empty or could not be read');
   }
 
+  const contentType =
+    file.mimetype && file.mimetype !== 'application/octet-stream'
+      ? file.mimetype
+      : ext === '.png'
+        ? 'image/png'
+        : ext === '.webp'
+          ? 'image/webp'
+          : ext === '.mp4'
+            ? 'video/mp4'
+            : ext === '.webm'
+              ? 'video/webm'
+              : ext === '.mov'
+                ? 'video/quicktime'
+                : 'image/jpeg';
+
   const { error } = await supabase.storage.from(env.supabaseBucket).upload(storagePath, file.buffer, {
-    contentType: file.mimetype,
+    contentType,
     upsert: false,
   });
 

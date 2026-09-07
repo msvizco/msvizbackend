@@ -26,6 +26,9 @@ const PUBLIC_FIELDS = {
   projectsCompleted: true,
   clientsServed: true,
   awardsWon: true,
+  whoImageUrl: true,
+  missionImageUrl: true,
+  visionImageUrl: true,
 } as const;
 
 export async function getSettings(admin = false) {
@@ -106,6 +109,44 @@ export async function uploadLogo(file: Express.Multer.File) {
       heroSubtitle: '3D Visualization • Interior Design • Exterior Design • Floor Planning',
       logoUrl: uploaded.imageUrl,
       logoPath: uploaded.storagePath,
+    },
+  });
+}
+
+type PanelImageKey = 'who' | 'mission' | 'vision';
+
+const PANEL_FIELDS: Record<PanelImageKey, { url: 'whoImageUrl' | 'missionImageUrl' | 'visionImageUrl'; path: 'whoImagePath' | 'missionImagePath' | 'visionImagePath' }> = {
+  who: { url: 'whoImageUrl', path: 'whoImagePath' },
+  mission: { url: 'missionImageUrl', path: 'missionImagePath' },
+  vision: { url: 'visionImageUrl', path: 'visionImagePath' },
+};
+
+export async function uploadPanelImage(panel: PanelImageKey, file: Express.Multer.File) {
+  const fields = PANEL_FIELDS[panel];
+  if (!fields) throw new Error('Invalid panel');
+
+  const existing = await prisma.siteSetting.findUnique({ where: { id: 'default' } });
+  const uploaded = await uploadBuffer(file, `site/${panel}`);
+  const oldPath = existing?.[fields.path];
+  if (oldPath) await deleteStoredFile(oldPath);
+
+  return prisma.siteSetting.upsert({
+    where: { id: 'default' },
+    update: {
+      [fields.url]: uploaded.imageUrl,
+      [fields.path]: uploaded.storagePath,
+    },
+    create: {
+      id: 'default',
+      companyName: 'MSVIZ',
+      email: 'hello@msviz.com',
+      phone: '',
+      address: '',
+      websiteDescription: '',
+      heroHeading: 'Architecture Beyond Imagination',
+      heroSubtitle: '3D Visualization • Interior Design • Exterior Design • Floor Planning',
+      [fields.url]: uploaded.imageUrl,
+      [fields.path]: uploaded.storagePath,
     },
   });
 }

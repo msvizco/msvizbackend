@@ -24,7 +24,7 @@ export const listPublic = asyncHandler(async (req: Request, res: Response) => {
       featured: parseBool(req.query.featured),
       latest: parseBool(req.query.latest),
       completed: parseBool(req.query.completed),
-      sort: (req.query.sort as string) || 'newest',
+      sort: (req.query.sort as string) || 'order',
     },
     false,
   );
@@ -49,7 +49,7 @@ export const listAdmin = asyncHandler(async (req: Request, res: Response) => {
       latest: parseBool(req.query.latest),
       completed: parseBool(req.query.completed),
       published: parseBool(req.query.published),
-      sort: (req.query.sort as string) || 'newest',
+      sort: (req.query.sort as string) || 'order',
     },
     true,
   );
@@ -116,6 +116,13 @@ export const reorderImages = asyncHandler(async (req: Request, res: Response) =>
   if (!Array.isArray(ids)) throw new AppError(400, 'orderedIds must be an array');
   const project = await projectService.reorderGalleryImages(param(req, 'id'), ids);
   return ok(res, project, 'Images reordered');
+});
+
+export const reorder = asyncHandler(async (req: Request, res: Response) => {
+  const ids = req.body.orderedIds as string[];
+  if (!Array.isArray(ids)) throw new AppError(400, 'orderedIds must be an array');
+  const result = await projectService.reorderProjects(ids);
+  return paginated(res, result.items, { page: result.page, limit: result.limit, total: result.total });
 });
 
 export const deleteImage = asyncHandler(async (req: Request, res: Response) => {

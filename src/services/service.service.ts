@@ -49,6 +49,8 @@ interface ServiceInput {
 
 export async function createService(input: ServiceInput) {
   const slug = await uniqueSlug(input.name, input.slug);
+  const maxOrder = await prisma.service.aggregate({ _max: { displayOrder: true } });
+  const nextOrder = input.displayOrder ?? (maxOrder._max.displayOrder ?? -1) + 1;
   return prisma.service.create({
     data: {
       name: sanitizeString(input.name),
@@ -56,7 +58,7 @@ export async function createService(input: ServiceInput) {
       shortDescription: sanitizeString(input.shortDescription),
       fullDescription: sanitizeString(input.fullDescription),
       icon: sanitizeOptional(input.icon),
-      displayOrder: input.displayOrder ?? 0,
+      displayOrder: nextOrder,
       active: input.active ?? true,
     },
   });
@@ -126,4 +128,21 @@ export async function deleteServiceImage(id: string) {
     where: { id },
     data: { imageUrl: null, storagePath: null },
   });
+}
+
+export async function reorderServices(orderedIds: string[]) {
+  if (!Array.isArray(orderedIds) || !orderedIds.length) {
+    throw new AppError(400, 'orderedIds must be a non-empty array');
+  }
+
+  await prisma.$transaction(
+    orderedIds.map((id, index) =>
+      prisma.service.update({
+        where: { id },
+        data: { displayOrder: index },
+      }),
+    ),
+  );
+
+  return listServices(true);
 }
