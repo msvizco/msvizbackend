@@ -4,6 +4,9 @@ import { getSupabase, isSupabaseConfigured } from '../config/supabase';
 import { env } from '../config/env';
 import { AppError } from '../utils/AppError';
 
+/** Keep uploads under Vercel’s ~4.5MB serverless body limit (multipart overhead included). */
+const VERCEL_SAFE_UPLOAD_BYTES = 3.5 * 1024 * 1024;
+
 export interface UploadedImage {
   imageUrl: string;
   storagePath: string;
@@ -26,6 +29,13 @@ export async function uploadBuffer(
 
   if (!file?.buffer?.length) {
     throw new AppError(400, 'Uploaded file is empty or could not be read');
+  }
+
+  if (env.isVercel && file.buffer.length > VERCEL_SAFE_UPLOAD_BYTES) {
+    throw new AppError(
+      413,
+      'Image payload is too large for the API host. High-resolution files should be JPG/PNG under ~3.5MB (the admin UI now optimizes this automatically).',
+    );
   }
 
   const contentType =

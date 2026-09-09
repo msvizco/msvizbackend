@@ -54,7 +54,8 @@ All traffic is routed to the Express app via `api/index.ts`:
 ## Limits
 
 - Serverless function timeout: 30s (configured in `vercel.json`)
-- Request body limit: ~4.5 MB on Hobby (keep uploads under `MAX_FILE_SIZE_MB`)
+- Request body limit: ~4.5 MB on Hobby — the admin UI auto-resizes/compresses high-resolution images before upload
+- Supported image formats: JPG, PNG, WEBP (not HEIC/TIFF)
 - In-memory rate limiting is disabled on Vercel (use Cloudflare or Upstash if needed)
 
 ## Local vs Vercel

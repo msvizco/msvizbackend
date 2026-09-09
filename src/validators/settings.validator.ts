@@ -18,6 +18,7 @@ export const settingsBodyValidator = [
   body('mission').optional({ nullable: true }).isString(),
   body('philosophy').optional({ nullable: true }).isString(),
   body('differentiators').optional({ nullable: true }).isString(),
+  body('aboutHeadline').optional({ nullable: true }).isString(),
   body('yearsExperience').optional().isInt({ min: 0 }).toInt(),
   body('projectsCompleted').optional().isInt({ min: 0 }).toInt(),
   body('clientsServed').optional().isInt({ min: 0 }).toInt(),

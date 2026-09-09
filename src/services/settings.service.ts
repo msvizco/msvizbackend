@@ -29,6 +29,7 @@ const PUBLIC_FIELDS = {
   whoImageUrl: true,
   missionImageUrl: true,
   visionImageUrl: true,
+  aboutHeadline: true,
 } as const;
 
 export async function getSettings(admin = false) {
@@ -58,6 +59,7 @@ export async function updateSettings(input: Record<string, unknown>) {
     'mission',
     'philosophy',
     'differentiators',
+    'aboutHeadline',
   ];
 
   const data: Record<string, unknown> = {};

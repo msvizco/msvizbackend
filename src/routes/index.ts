@@ -6,6 +6,7 @@ import adminProjectRoutes from './adminProject.routes';
 import { serviceRoutes, adminServiceRoutes } from './service.routes';
 import { contactRoutes, adminContactRoutes } from './contact.routes';
 import { settingsRoutes, adminSettingsRoutes, dashboardRouter } from './settings.routes';
+import { aboutRoutes, adminAboutRoutes } from './about.routes';
 
 const router = Router();
 
@@ -24,6 +25,9 @@ router.use('/admin/messages', adminContactRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/settings', adminSettingsRoutes);
 router.use('/admin/settings', adminSettingsRoutes);
+
+router.use('/about', aboutRoutes);
+router.use('/admin/about', adminAboutRoutes);
 
 router.get('/testimonials', settingsController.testimonials);
 router.get('/faqs', settingsController.faqs);

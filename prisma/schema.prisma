@@ -132,8 +132,57 @@ model SiteSetting {
   missionImagePath   String?
   visionImageUrl     String?
   visionImagePath    String?
+  aboutHeadline      String?  @db.Text
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+}
+
+model AboutFeature {
+  id           String   @id @default(uuid())
+  title        String
+  description  String   @db.Text
+  iconUrl      String?
+  iconPath     String?
+  linkUrl      String?
+  displayOrder Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active])
+  @@index([displayOrder])
+}
+
+model TeamMember {
+  id           String   @id @default(uuid())
+  name         String
+  role         String
+  imageUrl     String?
+  imagePath    String?
+  rating       Int      @default(5)
+  displayOrder Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active])
+  @@index([displayOrder])
+}
+
+model AboutStory {
+  id           String   @id @default(uuid())
+  title        String
+  subtitle     String?
+  body         String   @db.Text
+  imageUrl     String?
+  imagePath    String?
+  displayOrder Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active])
+  @@index([displayOrder])
 }
 
 model Testimonial {
