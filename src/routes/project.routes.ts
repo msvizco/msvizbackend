@@ -12,6 +12,7 @@ import {
 const router = Router();
 
 router.get('/', projectQueryValidator, validate, projectController.listPublic);
+router.get('/categories', projectController.listCategories);
 router.get('/:slug', slugParamValidator, validate, projectController.getBySlug);
 
 router.post('/', requireAuth, projectBodyValidator, validate, projectController.create);

@@ -31,6 +31,11 @@ export const listPublic = asyncHandler(async (req: Request, res: Response) => {
   return paginated(res, items, { page, limit, total });
 });
 
+export const listCategories = asyncHandler(async (_req: Request, res: Response) => {
+  const categories = await projectService.listUsedCategories();
+  return ok(res, categories);
+});
+
 export const getBySlug = asyncHandler(async (req: Request, res: Response) => {
   const project = await projectService.getProjectBySlug(param(req, 'slug'));
   const related = await projectService.getRelatedProjects(project.slug, project.category);

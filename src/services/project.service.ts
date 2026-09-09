@@ -112,6 +112,16 @@ export async function listProjects(query: ListQuery, admin = false) {
   return { items, total, page, limit };
 }
 
+export async function listUsedCategories() {
+  const rows = await prisma.project.findMany({
+    where: { published: true },
+    select: { category: true },
+    distinct: ['category'],
+    orderBy: { category: 'asc' },
+  });
+  return rows.map((row) => row.category);
+}
+
 export async function getProjectBySlug(slug: string, admin = false) {
   const project = await prisma.project.findUnique({
     where: { slug },
