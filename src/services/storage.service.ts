@@ -88,6 +88,16 @@ export async function deleteStoredFile(storagePath: string | null | undefined): 
   }
 }
 
+/** Extract bucket-relative path from a Supabase public object URL. */
+export function storagePathFromPublicUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const marker = `/storage/v1/object/public/${env.supabaseBucket}/`;
+  const index = url.indexOf(marker);
+  if (index === -1) return null;
+  const pathPart = url.slice(index + marker.length).split('?')[0];
+  return pathPart ? decodeURIComponent(pathPart) : null;
+}
+
 export async function deleteStoredFiles(paths: (string | null | undefined)[]): Promise<void> {
   const valid = paths.filter((p): p is string => Boolean(p) && !p!.startsWith('seed/') && !p!.startsWith('http'));
   if (!valid.length || !isSupabaseConfigured()) return;

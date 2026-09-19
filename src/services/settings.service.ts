@@ -1,6 +1,6 @@
 import { prisma } from '../config/prisma';
 import { sanitizeOptional, sanitizeString } from '../utils/sanitize';
-import { deleteStoredFile, uploadBuffer } from './storage.service';
+import { deleteStoredFile, storagePathFromPublicUrl, uploadBuffer } from './storage.service';
 
 const PUBLIC_FIELDS = {
   id: true,
@@ -31,6 +31,7 @@ const PUBLIC_FIELDS = {
   missionImageUrl: true,
   visionImageUrl: true,
   aboutHeadline: true,
+  updatedAt: true,
 } as const;
 
 export async function getSettings(admin = false) {
@@ -119,7 +120,12 @@ export async function uploadLogo(file: Express.Multer.File) {
 export async function uploadHeroImage(file: Express.Multer.File) {
   const existing = await prisma.siteSetting.findUnique({ where: { id: 'default' } });
   const uploaded = await uploadBuffer(file, 'site/hero');
-  if (existing?.heroImagePath) await deleteStoredFile(existing.heroImagePath);
+
+  const oldPath =
+    existing?.heroImagePath || storagePathFromPublicUrl(existing?.heroImageUrl || undefined);
+  if (oldPath && oldPath !== uploaded.storagePath) {
+    await deleteStoredFile(oldPath);
+  }
 
   return prisma.siteSetting.upsert({
     where: { id: 'default' },
