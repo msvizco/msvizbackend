@@ -159,8 +159,11 @@ export async function uploadPanelImage(panel: PanelImageKey, file: Express.Multe
 
   const existing = await prisma.siteSetting.findUnique({ where: { id: 'default' } });
   const uploaded = await uploadBuffer(file, `site/${panel}`);
-  const oldPath = existing?.[fields.path];
-  if (oldPath) await deleteStoredFile(oldPath);
+  const oldPath =
+    existing?.[fields.path] || storagePathFromPublicUrl(existing?.[fields.url] || undefined);
+  if (oldPath && oldPath !== uploaded.storagePath) {
+    await deleteStoredFile(oldPath);
+  }
 
   return prisma.siteSetting.upsert({
     where: { id: 'default' },
