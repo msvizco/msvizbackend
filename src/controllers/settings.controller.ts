@@ -25,6 +25,12 @@ export const uploadLogo = asyncHandler(async (req: Request, res: Response) => {
   return ok(res, settings, 'Logo uploaded');
 });
 
+export const uploadHeroImage = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.file) throw new AppError(400, 'Hero image is required');
+  const settings = await settingsService.uploadHeroImage(req.file);
+  return ok(res, settings, 'Hero image uploaded');
+});
+
 export const uploadPanelImage = asyncHandler(async (req: Request, res: Response) => {
   if (!req.file) throw new AppError(400, 'Image is required');
   const panel = String(req.params.panel || '') as 'who' | 'mission' | 'vision';

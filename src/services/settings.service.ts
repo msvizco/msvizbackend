@@ -17,6 +17,7 @@ const PUBLIC_FIELDS = {
   websiteDescription: true,
   heroHeading: true,
   heroSubtitle: true,
+  heroImageUrl: true,
   aboutIntro: true,
   vision: true,
   mission: true,
@@ -111,6 +112,29 @@ export async function uploadLogo(file: Express.Multer.File) {
       heroSubtitle: '3D Visualization • Interior Design • Exterior Design • Floor Planning',
       logoUrl: uploaded.imageUrl,
       logoPath: uploaded.storagePath,
+    },
+  });
+}
+
+export async function uploadHeroImage(file: Express.Multer.File) {
+  const existing = await prisma.siteSetting.findUnique({ where: { id: 'default' } });
+  const uploaded = await uploadBuffer(file, 'site/hero');
+  if (existing?.heroImagePath) await deleteStoredFile(existing.heroImagePath);
+
+  return prisma.siteSetting.upsert({
+    where: { id: 'default' },
+    update: { heroImageUrl: uploaded.imageUrl, heroImagePath: uploaded.storagePath },
+    create: {
+      id: 'default',
+      companyName: 'MSVIZ',
+      email: 'hello@msviz.com',
+      phone: '',
+      address: '',
+      websiteDescription: '',
+      heroHeading: 'Architecture Beyond Imagination',
+      heroSubtitle: '3D Visualization • Interior Design • Exterior Design • Floor Planning',
+      heroImageUrl: uploaded.imageUrl,
+      heroImagePath: uploaded.storagePath,
     },
   });
 }
