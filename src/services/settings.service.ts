@@ -18,6 +18,7 @@ const PUBLIC_FIELDS = {
   heroHeading: true,
   heroSubtitle: true,
   heroImageUrl: true,
+  ctaBackgroundImageUrl: true,
   aboutIntro: true,
   vision: true,
   mission: true,
@@ -156,6 +157,38 @@ export async function uploadHeroImage(file: Express.Multer.File) {
       heroSubtitle: '3D Visualization • Interior Design • Exterior Design • Floor Planning',
       heroImageUrl: uploaded.imageUrl,
       heroImagePath: uploaded.storagePath,
+    },
+  });
+}
+
+export async function uploadCtaBackgroundImage(file: Express.Multer.File) {
+  const existing = await prisma.siteSetting.findUnique({ where: { id: 'default' } });
+  const uploaded = await uploadBuffer(file, 'site/cta');
+
+  const oldPath =
+    existing?.ctaBackgroundImagePath ||
+    storagePathFromPublicUrl(existing?.ctaBackgroundImageUrl || undefined);
+  if (oldPath && oldPath !== uploaded.storagePath) {
+    await deleteStoredFile(oldPath);
+  }
+
+  return prisma.siteSetting.upsert({
+    where: { id: 'default' },
+    update: {
+      ctaBackgroundImageUrl: uploaded.imageUrl,
+      ctaBackgroundImagePath: uploaded.storagePath,
+    },
+    create: {
+      id: 'default',
+      companyName: 'MSVIZ',
+      email: 'hello@msviz.com',
+      phone: '',
+      address: '',
+      websiteDescription: '',
+      heroHeading: 'Architecture Beyond Imagination',
+      heroSubtitle: '3D Visualization • Interior Design • Exterior Design • Floor Planning',
+      ctaBackgroundImageUrl: uploaded.imageUrl,
+      ctaBackgroundImagePath: uploaded.storagePath,
     },
   });
 }

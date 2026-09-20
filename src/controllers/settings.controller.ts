@@ -31,6 +31,12 @@ export const uploadHeroImage = asyncHandler(async (req: Request, res: Response) 
   return ok(res, settings, 'Hero image uploaded');
 });
 
+export const uploadCtaBackgroundImage = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.file) throw new AppError(400, 'CTA background image is required');
+  const settings = await settingsService.uploadCtaBackgroundImage(req.file);
+  return ok(res, settings, 'CTA background image uploaded');
+});
+
 export const uploadPanelImage = asyncHandler(async (req: Request, res: Response) => {
   if (!req.file) throw new AppError(400, 'Image is required');
   const panel = String(req.params.panel || '') as settingsService.PanelImageKey;

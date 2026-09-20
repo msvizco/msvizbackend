@@ -119,6 +119,8 @@ model SiteSetting {
   heroSubtitle       String
   heroImageUrl       String?
   heroImagePath      String?
+  ctaBackgroundImageUrl  String?
+  ctaBackgroundImagePath String?
   aboutIntro         String?  @db.Text
   vision             String?  @db.Text
   mission            String?  @db.Text

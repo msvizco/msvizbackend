@@ -17,6 +17,7 @@ adminRouter.get('/', settingsController.getAdmin);
 adminRouter.put('/', settingsBodyValidator, validate, settingsController.update);
 adminRouter.post('/logo', upload.single('image'), settingsController.uploadLogo);
 adminRouter.post('/hero-image', upload.single('image'), settingsController.uploadHeroImage);
+adminRouter.post('/cta-background', upload.single('image'), settingsController.uploadCtaBackgroundImage);
 adminRouter.post('/panel-image/:panel', upload.single('image'), settingsController.uploadPanelImage);
 
 const dashboardRouter = Router();
