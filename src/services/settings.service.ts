@@ -31,6 +31,15 @@ const PUBLIC_FIELDS = {
   missionImageUrl: true,
   visionImageUrl: true,
   aboutHeadline: true,
+  homeWhoIntro: true,
+  homeWhoSecondary: true,
+  homeMission: true,
+  homeMissionSecondary: true,
+  homeVision: true,
+  homeVisionSecondary: true,
+  homeWhoImageUrl: true,
+  homeMissionImageUrl: true,
+  homeVisionImageUrl: true,
   updatedAt: true,
 } as const;
 
@@ -62,6 +71,12 @@ export async function updateSettings(input: Record<string, unknown>) {
     'philosophy',
     'differentiators',
     'aboutHeadline',
+    'homeWhoIntro',
+    'homeWhoSecondary',
+    'homeMission',
+    'homeMissionSecondary',
+    'homeVision',
+    'homeVisionSecondary',
   ];
 
   const data: Record<string, unknown> = {};
@@ -145,20 +160,45 @@ export async function uploadHeroImage(file: Express.Multer.File) {
   });
 }
 
-type PanelImageKey = 'who' | 'mission' | 'vision';
+/** About page panels: who | mission | vision. Home panels: home-who | home-mission | home-vision */
+export type PanelImageKey = 'who' | 'mission' | 'vision' | 'home-who' | 'home-mission' | 'home-vision';
 
-const PANEL_FIELDS: Record<PanelImageKey, { url: 'whoImageUrl' | 'missionImageUrl' | 'visionImageUrl'; path: 'whoImagePath' | 'missionImagePath' | 'visionImagePath' }> = {
-  who: { url: 'whoImageUrl', path: 'whoImagePath' },
-  mission: { url: 'missionImageUrl', path: 'missionImagePath' },
-  vision: { url: 'visionImageUrl', path: 'visionImagePath' },
+const PANEL_FIELDS: Record<
+  PanelImageKey,
+  {
+    url:
+      | 'whoImageUrl'
+      | 'missionImageUrl'
+      | 'visionImageUrl'
+      | 'homeWhoImageUrl'
+      | 'homeMissionImageUrl'
+      | 'homeVisionImageUrl';
+    path:
+      | 'whoImagePath'
+      | 'missionImagePath'
+      | 'visionImagePath'
+      | 'homeWhoImagePath'
+      | 'homeMissionImagePath'
+      | 'homeVisionImagePath';
+    folder: string;
+  }
+> = {
+  who: { url: 'whoImageUrl', path: 'whoImagePath', folder: 'site/who' },
+  mission: { url: 'missionImageUrl', path: 'missionImagePath', folder: 'site/mission' },
+  vision: { url: 'visionImageUrl', path: 'visionImagePath', folder: 'site/vision' },
+  'home-who': { url: 'homeWhoImageUrl', path: 'homeWhoImagePath', folder: 'site/home-who' },
+  'home-mission': { url: 'homeMissionImageUrl', path: 'homeMissionImagePath', folder: 'site/home-mission' },
+  'home-vision': { url: 'homeVisionImageUrl', path: 'homeVisionImagePath', folder: 'site/home-vision' },
 };
+
+export const PANEL_IMAGE_KEYS = Object.keys(PANEL_FIELDS) as PanelImageKey[];
 
 export async function uploadPanelImage(panel: PanelImageKey, file: Express.Multer.File) {
   const fields = PANEL_FIELDS[panel];
   if (!fields) throw new Error('Invalid panel');
 
   const existing = await prisma.siteSetting.findUnique({ where: { id: 'default' } });
-  const uploaded = await uploadBuffer(file, `site/${panel}`);
+  const uploaded = await uploadBuffer(file, fields.folder);
   const oldPath =
     existing?.[fields.path] || storagePathFromPublicUrl(existing?.[fields.url] || undefined);
   if (oldPath && oldPath !== uploaded.storagePath) {

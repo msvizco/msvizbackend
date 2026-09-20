@@ -33,9 +33,9 @@ export const uploadHeroImage = asyncHandler(async (req: Request, res: Response) 
 
 export const uploadPanelImage = asyncHandler(async (req: Request, res: Response) => {
   if (!req.file) throw new AppError(400, 'Image is required');
-  const panel = String(req.params.panel || '') as 'who' | 'mission' | 'vision';
-  if (!['who', 'mission', 'vision'].includes(panel)) {
-    throw new AppError(400, 'Panel must be who, mission, or vision');
+  const panel = String(req.params.panel || '') as settingsService.PanelImageKey;
+  if (!settingsService.PANEL_IMAGE_KEYS.includes(panel)) {
+    throw new AppError(400, 'Panel must be who, mission, vision, home-who, home-mission, or home-vision');
   }
   const settings = await settingsService.uploadPanelImage(panel, req.file);
   return ok(res, settings, 'Panel image uploaded');

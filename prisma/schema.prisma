@@ -135,6 +135,18 @@ model SiteSetting {
   visionImageUrl     String?
   visionImagePath    String?
   aboutHeadline      String?  @db.Text
+  homeWhoIntro           String?  @db.Text
+  homeWhoSecondary       String?  @db.Text
+  homeMission            String?  @db.Text
+  homeMissionSecondary   String?  @db.Text
+  homeVision             String?  @db.Text
+  homeVisionSecondary    String?  @db.Text
+  homeWhoImageUrl        String?
+  homeWhoImagePath       String?
+  homeMissionImageUrl    String?
+  homeMissionImagePath   String?
+  homeVisionImageUrl     String?
+  homeVisionImagePath    String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 }

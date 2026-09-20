@@ -73,6 +73,18 @@ async function main() {
         'Restraint over ornament. Light over decoration. Proportion over trend. Every project is an editorial composition of material, landscape, and human scale.',
       differentiators:
         'Photoreal visualization integrated with design, not added at the end. A single studio for interiors, exteriors, and documentation. Obsessive attention to atmosphere, season, and time of day.',
+      homeWhoIntro:
+        'MSVIZ is a multidisciplinary studio where architecture, visualization, and spatial storytelling converge. We design spaces that feel inevitable — composed, atmospheric, and built around how people actually live.',
+      homeWhoSecondary:
+        'Restraint over ornament. Light over decoration. Proportion over trend. Every project is an editorial composition of material, landscape, and human scale.',
+      homeMission:
+        'We translate unbuilt ideas into convincing, emotionally charged environments — from the first floor plate to the final dusk render.',
+      homeMissionSecondary:
+        'Photoreal visualization integrated with design, not added at the end. A single studio for interiors, exteriors, and documentation. Obsessive attention to atmosphere, season, and time of day.',
+      homeVision:
+        'To become the defining visualization and design partner for architects, developers, and private clients who refuse generic space.',
+      homeVisionSecondary:
+        'Restraint over ornament. Light over decoration. Proportion over trend. Every project is an editorial composition of material, landscape, and human scale.',
       yearsExperience: 12,
       projectsCompleted: 180,
       clientsServed: 90,
